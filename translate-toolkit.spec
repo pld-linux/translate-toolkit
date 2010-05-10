@@ -30,6 +30,7 @@ Requires:	python-psyco
 Requires:	python-simplejson
 Requires:	python-vobject
 BuildArch:	noarch
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 A set of tools for managing translation and software localization via
@@ -145,61 +146,60 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/%{name}/stoplist-en
 %{_datadir}/%{name}/langmodels/fpdb.conf
 
-# TODO: %lang
-%{_datadir}/%{name}/langmodels/afrikaans.lm
-%{_datadir}/%{name}/langmodels/albanian.lm
-%{_datadir}/%{name}/langmodels/arabic.lm
-%{_datadir}/%{name}/langmodels/basque.lm
-%{_datadir}/%{name}/langmodels/belarus.lm
-%{_datadir}/%{name}/langmodels/bosnian.lm
-%{_datadir}/%{name}/langmodels/breton.lm
-%{_datadir}/%{name}/langmodels/catalan.lm
+%lang(af) %{_datadir}/%{name}/langmodels/afrikaans.lm
+%lang(sq) %{_datadir}/%{name}/langmodels/albanian.lm
+%lang(ar) %{_datadir}/%{name}/langmodels/arabic.lm
+%lang(eu) %{_datadir}/%{name}/langmodels/basque.lm
+%lang(be) %{_datadir}/%{name}/langmodels/belarus.lm
+%lang(bs) %{_datadir}/%{name}/langmodels/bosnian.lm
+%lang(br) %{_datadir}/%{name}/langmodels/breton.lm
+%lang(ca) %{_datadir}/%{name}/langmodels/catalan.lm
 %lang(zh_CN) %{_datadir}/%{name}/langmodels/chinese_simplified.lm
-%lang(zh_tw) %{_datadir}/%{name}/langmodels/chinese_traditional.lm
-%{_datadir}/%{name}/langmodels/croatian.lm
+%lang(zh_TW) %{_datadir}/%{name}/langmodels/chinese_traditional.lm
+%lang(hr) %{_datadir}/%{name}/langmodels/croatian.lm
 %lang(cz) %{_datadir}/%{name}/langmodels/czech.lm
 %lang(da) %{_datadir}/%{name}/langmodels/danish.lm
 %lang(nl) %{_datadir}/%{name}/langmodels/dutch.lm
 %lang(en) %{_datadir}/%{name}/langmodels/english.lm
-%{_datadir}/%{name}/langmodels/esperanto.lm
+%lang(eo) %{_datadir}/%{name}/langmodels/esperanto.lm
 %lang(et) %{_datadir}/%{name}/langmodels/estonian.lm
 %lang(fi) %{_datadir}/%{name}/langmodels/finnish.lm
 %lang(fr) %{_datadir}/%{name}/langmodels/french.lm
-%{_datadir}/%{name}/langmodels/frisian.lm
+%lang(fy) %{_datadir}/%{name}/langmodels/frisian.lm
 %lang(de) %{_datadir}/%{name}/langmodels/german.lm
 %lang(el) %{_datadir}/%{name}/langmodels/greek.lm
-%{_datadir}/%{name}/langmodels/hebrew.lm
+%lang(he) %{_datadir}/%{name}/langmodels/hebrew.lm
 %lang(hu) %{_datadir}/%{name}/langmodels/hungarian.lm
-%{_datadir}/%{name}/langmodels/icelandic.lm
-%{_datadir}/%{name}/langmodels/indonesian.lm
-%{_datadir}/%{name}/langmodels/irish_gaelic.lm
+%lang(is) %{_datadir}/%{name}/langmodels/icelandic.lm
+%lang(id) %{_datadir}/%{name}/langmodels/indonesian.lm
+%lang(ga) %{_datadir}/%{name}/langmodels/irish_gaelic.lm
 %lang(it) %{_datadir}/%{name}/langmodels/italian.lm
 %lang(ja) %{_datadir}/%{name}/langmodels/japanese.lm
 %lang(sr) %{_datadir}/%{name}/langmodels/latin.lm
 %lang(lv) %{_datadir}/%{name}/langmodels/latvian.lm
 %lang(lt) %{_datadir}/%{name}/langmodels/lithuanian.lm
-%{_datadir}/%{name}/langmodels/malay.lm
-%{_datadir}/%{name}/langmodels/manx_gaelic.lm
-%lang(nb) %{_datadir}/%{name}/langmodels/norwegian.lm
+%lang(ms) %{_datadir}/%{name}/langmodels/malay.lm
+%lang(gv) %{_datadir}/%{name}/langmodels/manx_gaelic.lm
+%lang(no) %{_datadir}/%{name}/langmodels/norwegian.lm
 %lang(po) %{_datadir}/%{name}/langmodels/polish.lm
 %lang(pt) %{_datadir}/%{name}/langmodels/portuguese.lm
-%{_datadir}/%{name}/langmodels/quechua.lm
-%{_datadir}/%{name}/langmodels/romanian.lm
-%{_datadir}/%{name}/langmodels/romansh.lm
+%lang(qu) %{_datadir}/%{name}/langmodels/quechua.lm
+%lang(ro) %{_datadir}/%{name}/langmodels/romanian.lm
+%lang(rm) %{_datadir}/%{name}/langmodels/romansh.lm
 %lang(ru) %{_datadir}/%{name}/langmodels/russian.lm
-%{_datadir}/%{name}/langmodels/scots.lm
-%{_datadir}/%{name}/langmodels/scots_gaelic.lm
-%{_datadir}/%{name}/langmodels/serbian_ascii.lm
-%{_datadir}/%{name}/langmodels/slovak_ascii.lm
-%{_datadir}/%{name}/langmodels/slovenian.lm
+%lang(gd) %{_datadir}/%{name}/langmodels/scots.lm
+%lang(gd) %{_datadir}/%{name}/langmodels/scots_gaelic.lm
+%lang(sr@latin) %{_datadir}/%{name}/langmodels/serbian_ascii.lm
+%lang(sk@latin) %{_datadir}/%{name}/langmodels/slovak_ascii.lm
+%lang(sk) %{_datadir}/%{name}/langmodels/slovenian.lm
 %lang(es) %{_datadir}/%{name}/langmodels/spanish.lm
-%{_datadir}/%{name}/langmodels/swahili.lm
+%lang(sw) %{_datadir}/%{name}/langmodels/swahili.lm
 %lang(sv) %{_datadir}/%{name}/langmodels/swedish.lm
-%{_datadir}/%{name}/langmodels/tagalog.lm
-%{_datadir}/%{name}/langmodels/turkish.lm
+%lang(tl) %{_datadir}/%{name}/langmodels/tagalog.lm
+%lang(tr) %{_datadir}/%{name}/langmodels/turkish.lm
 %lang(uk) %{_datadir}/%{name}/langmodels/ukrainian.lm
-%{_datadir}/%{name}/langmodels/vietnamese.lm
-%{_datadir}/%{name}/langmodels/welsh.lm
+%lang(vi) %{_datadir}/%{name}/langmodels/vietnamese.lm
+%lang(cy) %{_datadir}/%{name}/langmodels/welsh.lm
 
 %dir %{py_sitescriptdir}/translate
 %{py_sitescriptdir}/translate/*.py[co]
