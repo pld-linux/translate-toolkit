@@ -1,0 +1,219 @@
+#
+# Conditional build:
+%bcond_without	apidocs		# do not build and package API docs
+
+Summary:	Tools to assist with translation and software localization
+Name:		translate-toolkit
+Version:	1.6.0
+Release:	0.1
+License:	GPL v2+
+Group:		Development/Tools
+URL:		http://translate.sourceforge.net/wiki/toolkit/index
+Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
+# Source0-md5:	52e4409e72565bb49e7efad235b4a213
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+Patch0:		%{name}-stoplist.patch
+Patch1:		%{name}-langmodel_dir.patch
+BuildRequires:	python-devel
+# The following are needed for man page generation
+BuildRequires:	python-lxml
+BuildRequires:	python-simplejson
+BuildRequires:	python-vobject
+Requires:	gettext-libs
+Requires:	python-Levenshtein
+Requires:	python-enchant
+Requires:	python-iniparse
+Requires:	python-lxml
+%ifarch %{ix86}
+Requires:	python-psyco
+%endif
+Requires:	python-simplejson
+Requires:	python-vobject
+BuildArch:	noarch
+
+%description
+A set of tools for managing translation and software localization via
+Gettext PO or XLIFF format files.
+
+Including:
+- Convertors: convert from various formats to PO or XLIFF
+- Formats:
+  - Core localization formats - XLIFF and Gettext PO
+  - Other localization formats - TMX, TBX, Qt Linguist (.ts), Java
+    .properties, Wordfast TM, OmegaT glossary
+  - Compiled formats: Gettext MO, Qt .qm
+  - Other formats - OpenDocument Format (ODF), text, HTML, CSV, INI,
+    wiki (MediaWiki, DokuWiki), iCal
+  - Specialised - OpenOffice.org GSI/SDF, PHP, Mozilla (.dtd,
+    .properties, etc), Symbian, Innosetup, tikiwiki, subtitles
+- Tools: count, search, debug, segment and pretranslate localization
+  files. Extract terminology. Pseudo-localize
+- Checkers: validate translations with over 45 checks
+
+%package apidocs
+Summary:	Development API for translate-toolkit applications
+Group:		Documentation
+
+%description apidocs
+Translate Toolkit API documentation for developers wishing to build
+new tools for the toolkit or to use the libraries in other
+localization tools.
+
+%prep
+%setup -q
+%patch0 -p1
+%patch1 -p1
+
+%build
+%{__python} setup.py build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%{__python} setup.py install \
+	--optimize=2 \
+	--skip-build \
+	--root $RPM_BUILD_ROOT
+
+# create manpages
+install -d $RPM_BUILD_ROOT%{_mandir}/man1
+for program in $RPM_BUILD_ROOT%{_bindir}/*; do
+	case $(basename $program) in
+	  pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py|tmserver|build_tmdb)
+	   ;;
+	  *)
+		LC_ALL=C PYTHONPATH=. $program --manpage \
+		  > $RPM_BUILD_ROOT%{_mandir}/man1/$(basename $program).1 \
+		  || rm -f $RPM_BUILD_ROOT%{_mandir}/man1/$(basename $program).1
+		  ;;
+	esac
+done
+
+%py_postclean
+
+# remove documentation files from site-packages
+rm -r $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/doc
+rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{COPYING,ChangeLog,LICENSE,README}
+rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{convert,filters,tools}/TODO
+rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/README
+
+# Move data files to %{_datadir}
+mkdir  $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
+mv $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share/stoplist* $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
+mv $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share/langmodels $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
+rmdir $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share
+
+# we don't package tests
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/tools/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/convert/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/filters/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/lang/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/indexing/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/test_*.py
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/placeables/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/test_*.py*
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/xml_extract/test_*.py*
+
+# build lang file
+echo "%dir %{py_sitescriptdir}/translate/lang" > %{name}.lang
+for a in $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/lang/*.py[co]; do
+	# path file and lang
+	p=${a#$RPM_BUILD_ROOT} f=${a##*/} l=${f%.py*}
+	case $l in
+	code_or|common|data|factory|identify|__init__|ngram|poedit)
+		echo $p >> %{name}.lang
+		;;
+	*)
+		echo "%lang($l) $p" >> %{name}.lang
+		;;
+	esac
+done
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files -f %{name}.lang
+%defattr(644,root,root,755)
+%doc translate/ChangeLog translate/README
+%doc translate/doc/user/toolkit-[a-z]*
+%attr(755,root,root) %{_bindir}/*
+%{_mandir}/man1/*
+%dir %{_datadir}/translate-toolkit
+
+%{_datadir}/%{name}/langmodels
+%{_datadir}/%{name}/langmodels/README
+%{_datadir}/%{name}/stoplist-en
+%{_datadir}/%{name}/langmodels/fpdb.conf
+
+# TODO: %lang
+%{_datadir}/%{name}/langmodels/afrikaans.lm
+%{_datadir}/%{name}/langmodels/albanian.lm
+%{_datadir}/%{name}/langmodels/arabic.lm
+%{_datadir}/%{name}/langmodels/basque.lm
+%{_datadir}/%{name}/langmodels/belarus.lm
+%{_datadir}/%{name}/langmodels/bosnian.lm
+%{_datadir}/%{name}/langmodels/breton.lm
+%{_datadir}/%{name}/langmodels/catalan.lm
+%lang(zh_CN) %{_datadir}/%{name}/langmodels/chinese_simplified.lm
+%lang(zh_tw) %{_datadir}/%{name}/langmodels/chinese_traditional.lm
+%{_datadir}/%{name}/langmodels/croatian.lm
+%lang(cz) %{_datadir}/%{name}/langmodels/czech.lm
+%lang(da) %{_datadir}/%{name}/langmodels/danish.lm
+%lang(nl) %{_datadir}/%{name}/langmodels/dutch.lm
+%lang(en) %{_datadir}/%{name}/langmodels/english.lm
+%{_datadir}/%{name}/langmodels/esperanto.lm
+%lang(et) %{_datadir}/%{name}/langmodels/estonian.lm
+%lang(fi) %{_datadir}/%{name}/langmodels/finnish.lm
+%lang(fr) %{_datadir}/%{name}/langmodels/french.lm
+%{_datadir}/%{name}/langmodels/frisian.lm
+%lang(de) %{_datadir}/%{name}/langmodels/german.lm
+%lang(el) %{_datadir}/%{name}/langmodels/greek.lm
+%{_datadir}/%{name}/langmodels/hebrew.lm
+%lang(hu) %{_datadir}/%{name}/langmodels/hungarian.lm
+%{_datadir}/%{name}/langmodels/icelandic.lm
+%{_datadir}/%{name}/langmodels/indonesian.lm
+%{_datadir}/%{name}/langmodels/irish_gaelic.lm
+%lang(it) %{_datadir}/%{name}/langmodels/italian.lm
+%lang(ja) %{_datadir}/%{name}/langmodels/japanese.lm
+%lang(sr) %{_datadir}/%{name}/langmodels/latin.lm
+%lang(lv) %{_datadir}/%{name}/langmodels/latvian.lm
+%lang(lt) %{_datadir}/%{name}/langmodels/lithuanian.lm
+%{_datadir}/%{name}/langmodels/malay.lm
+%{_datadir}/%{name}/langmodels/manx_gaelic.lm
+%lang(nb) %{_datadir}/%{name}/langmodels/norwegian.lm
+%lang(po) %{_datadir}/%{name}/langmodels/polish.lm
+%lang(pt) %{_datadir}/%{name}/langmodels/portuguese.lm
+%{_datadir}/%{name}/langmodels/quechua.lm
+%{_datadir}/%{name}/langmodels/romanian.lm
+%{_datadir}/%{name}/langmodels/romansh.lm
+%lang(ru) %{_datadir}/%{name}/langmodels/russian.lm
+%{_datadir}/%{name}/langmodels/scots.lm
+%{_datadir}/%{name}/langmodels/scots_gaelic.lm
+%{_datadir}/%{name}/langmodels/serbian_ascii.lm
+%{_datadir}/%{name}/langmodels/slovak_ascii.lm
+%{_datadir}/%{name}/langmodels/slovenian.lm
+%lang(es) %{_datadir}/%{name}/langmodels/spanish.lm
+%{_datadir}/%{name}/langmodels/swahili.lm
+%lang(sv) %{_datadir}/%{name}/langmodels/swedish.lm
+%{_datadir}/%{name}/langmodels/tagalog.lm
+%{_datadir}/%{name}/langmodels/turkish.lm
+%lang(uk) %{_datadir}/%{name}/langmodels/ukrainian.lm
+%{_datadir}/%{name}/langmodels/vietnamese.lm
+%{_datadir}/%{name}/langmodels/welsh.lm
+
+%dir %{py_sitescriptdir}/translate
+%{py_sitescriptdir}/translate/*.py[co]
+%{py_sitescriptdir}/translate/convert
+%{py_sitescriptdir}/translate/filters
+%{py_sitescriptdir}/translate/misc
+%{py_sitescriptdir}/translate/search
+%{py_sitescriptdir}/translate/services
+%{py_sitescriptdir}/translate/storage
+%{py_sitescriptdir}/translate/tools
+%if "%{py_ver}" > "2.4"
+%{py_sitescriptdir}/translate_toolkit-*.egg-info
+%endif
+
+%files apidocs
+%defattr(644,root,root,755)
+%doc translate/doc/api/*

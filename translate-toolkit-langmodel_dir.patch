@@ -1,0 +1,13 @@
+diff -up translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir translate-toolkit-1.5.0/translate/lang/identify.py
+diff -up translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir translate-toolkit-1.5.0/translate/lang/identify.py
+--- translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir	2009-11-24 16:33:22.000000000 +0200
++++ translate-toolkit-1.5.0/translate/lang/identify.py	2009-11-24 16:34:36.000000000 +0200
+@@ -32,7 +32,7 @@ from ngram import NGram
+ 
+ 
+ class LanguageIdentifier(object):
+-    MODEL_DIR = get_abs_data_filename('langmodels')
++    MODEL_DIR = '/usr/share/translate-toolkit/langmodels'
+     """The directory containing the ngram language model files."""
+     CONF_FILE = 'fpdb.conf'
+     """
