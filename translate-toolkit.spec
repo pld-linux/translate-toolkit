@@ -1,11 +1,14 @@
+# TODO
+# - fc gettext-libs is contained in "gettext-devel, libasprintf", but which exactly?
 #
 # Conditional build:
-%bcond_without	apidocs		# do not build and package API docs
+%bcond_without	apidocs		# do not package API docs
+%bcond_without	doc			# do not package user docs
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.6.0
-Release:	0.1
+Release:	0.2
 License:	GPL v2+
 Group:		Development/Tools
 URL:		http://translate.sourceforge.net/wiki/toolkit/index
@@ -19,11 +22,10 @@ BuildRequires:	python-devel
 BuildRequires:	python-lxml
 BuildRequires:	python-simplejson
 BuildRequires:	python-vobject
-Requires:	gettext-libs
 Requires:	python-Levenshtein
-Requires:	python-enchant
 Requires:	python-iniparse
 Requires:	python-lxml
+Requires:	python-pyenchant
 %ifarch %{ix86}
 Requires:	python-psyco
 %endif
@@ -59,6 +61,13 @@ Group:		Documentation
 Translate Toolkit API documentation for developers wishing to build
 new tools for the toolkit or to use the libraries in other
 localization tools.
+
+%package doc
+Summary:	User Manual for translate-toolkit
+Group:		Documentation
+
+%description doc
+Documentation for translate-toolkit.
 
 %prep
 %setup -q
@@ -136,7 +145,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc translate/ChangeLog translate/README
-%doc translate/doc/user/toolkit-[a-z]*
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man1/*
 %dir %{_datadir}/translate-toolkit
@@ -214,6 +222,14 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitescriptdir}/translate_toolkit-*.egg-info
 %endif
 
+%if %{with doc}
+%files doc
+%defattr(644,root,root,755)
+%doc translate/doc/user/*
+%endif
+
+%if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
 %doc translate/doc/api/*
+%endif
