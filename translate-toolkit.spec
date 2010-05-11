@@ -8,7 +8,7 @@
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.6.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Development/Tools
 URL:		http://translate.sourceforge.net/wiki/toolkit/index
@@ -23,15 +23,16 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	python-lxml
 BuildRequires:	python-simplejson
 BuildRequires:	python-vobject
-Requires:	python-Levenshtein
 Requires:	python-iniparse
-Requires:	python-lxml
-Requires:	python-pyenchant
+Requires:	python-lxml >= 2.1.0
+Requires:	python-simplejson
+Requires:	python-vobject
 %ifarch %{ix86}
 Requires:	python-psyco
 %endif
-Requires:	python-simplejson
-Requires:	python-vobject
+Suggests:	iso-codes
+Suggests:	python-Levenshtein
+Suggests:	python-pyenchant
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
