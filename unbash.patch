@@ -1,0 +1,148 @@
+--- translate-toolkit-1.7.0/tools.orig/junitmsgfmt	2010-05-12 16:41:15.000000000 +0200
++++ translate-toolkit-1.7.0/tools/junitmsgfmt	2010-05-13 19:21:20.617544285 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2010 Zuza Software Foundation
+ #
+@@ -25,38 +25,38 @@
+ failures=0
+ successes=0
+ 
+-function failure {
++failure() {
+ 	pofile=$1
+ 	body=$(echo $body; echo "<testcase classname=\"$pofile\" name=\"msgfmt\" time=\"\">\n"; echo "<failure message=\"msgfmt failure\">$message</failure>\n</testcase>\n")
+ 	message=""
+ 	failures=$(($failures + 1))
+ }
+ 
+-function success {
++success() {
+ 	pofile=$1
+ 	body=$(echo $body; echo "<testcase classname=\"$pofile\" name=\"msgfmt\" time=\"\"></testcase>\n")
+ 	message=""
+ 	successes=$(($successes + 1))
+ }
+ 
+-function run_msgfmt {
++run_msgfmt() {
+ 	pofile=$1
+ 	exit_status=$(msgfmt -cv -o /dev/null $pofile 2>/dev/null > /dev/null; echo $?)
+-	message=$(msgfmt -cv -o /dev/null $pofile 2>/dev/stdout | while read i; do echo "$i\n" ; done)
++	message=$(msgfmt -cv -o /dev/null $pofile 2>/dev/stdout | while read i; do echo "$i"; echo "" ; done)
+ 	return $exit_status
+ }
+ 
+-function print_header {
++print_header() {
+         echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>"
+ 	echo "<testsuite name=\"\" errors=\"0\" failures=\"$failures\" skips=\"0\" tests=\"$((failures + successes))\" time=\"\" >"
+ }
+ 
+-function print_body {
++print_body() {
+ 	cat -
+-	echo -e $body
++	echo $body
+ }
+ 
+-function print_footer {
++print_footer() {
+ 	cat -
+ 	echo "</testsuite>"
+ }
+--- translate-toolkit-1.7.0/tools.orig/pocommentclean	2008-10-31 16:58:36.000000000 +0100
++++ translate-toolkit-1.7.0/tools/pocommentclean	2010-05-13 19:21:20.617544285 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2005 Zuza Software Foundation
+ #
+--- translate-toolkit-1.7.0/tools.orig/pocompendium	2008-01-24 12:54:56.000000000 +0100
++++ translate-toolkit-1.7.0/tools/pocompendium	2010-05-13 19:21:20.621015064 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2004, 2005 Zuza Software Foundation
+ #
+@@ -24,7 +24,7 @@
+ # combined and marked fuzzy.
+ 
+ 
+-function print_usage() {
++print_usage() {
+ 	echo "Usage: `basename $0` [options] output.po <-d directory(s)|file(s)>"
+ 	echo "       The first parameter is the output file, standard output if the output file is '-'."
+ 	echo "       Any number of directories may be specified for input files."
+@@ -97,7 +97,7 @@
+ 
+ tmp_dir=`mktemp -d tmp.XXXXXXXXXX`
+ 
+-if [ $1 == "-d" ]; then
++if [ $1 = "-d" ]; then
+ 	shift
+ 	directories=$*
+ 	if [ $# -eq 0 ]; then
+--- translate-toolkit-1.7.0/tools.orig/pomigrate2	2009-07-21 21:40:54.000000000 +0200
++++ translate-toolkit-1.7.0/tools/pomigrate2	2010-05-13 19:21:20.621015064 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2004, 2005 Zuza Software Foundation
+ #
+@@ -22,7 +22,7 @@
+ # pomigrate2 - migrates PO files from an old version using new POT files.
+ 
+ 
+-function usage() {
++usage() {
+ 	echo "Usage `basename $0` [options] <product-old> <product-new> <product-templates>"
+         echo
+         echo "Options:"
+@@ -100,7 +100,7 @@
+ 
+ echo "** Migrating files... **"
+ pots=`cd $templates; find . -name "*.pot"`
+-if [ "$pots" == "" ]; then
++if [ "$pots" = "" ]; then
+ 	echo "No POT templates found in: $templates"
+ 	exit 1
+ fi
+--- translate-toolkit-1.7.0/tools.orig/popuretext	2010-01-12 14:02:34.000000000 +0100
++++ translate-toolkit-1.7.0/tools/popuretext	2010-05-13 19:21:20.621015064 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2005 Zuza Software Foundation
+ #
+@@ -28,7 +28,7 @@
+ fi
+ 
+ do_pot=0
+-if [ "$1" == "-P" ]; then
++if [ "$1" = "-P" ]; then
+ 	do_pot=1
+ 	shift
+ 	potdir=$1
+--- translate-toolkit-1.7.0/tools.orig/poreencode	2008-01-24 12:54:56.000000000 +0100
++++ translate-toolkit-1.7.0/tools/poreencode	2010-05-13 19:21:20.621015064 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2004 Zuza Software Foundation
+ #
+--- translate-toolkit-1.7.0/tools.orig/posplit	2007-02-01 11:40:17.000000000 +0100
++++ translate-toolkit-1.7.0/tools/posplit	2010-05-13 19:21:20.621015064 +0200
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/bin/sh
+ #
+ # Copyright 2004, 2007 Zuza Software Foundation
+ #

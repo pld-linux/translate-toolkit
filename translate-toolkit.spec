@@ -7,17 +7,19 @@
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.6.0
-Release:	2
+Version:	1.7.0
+Release:	1
 License:	GPL v2+
 Group:		Development/Tools
 URL:		http://translate.sourceforge.net/wiki/toolkit/index
 Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	52e4409e72565bb49e7efad235b4a213
+# Source0-md5:	70a826257adbffab849556c2d50b8b48
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
+Patch2:		unbash.patch
 BuildRequires:	python-devel
+BuildRequires:	checkbashisms
 BuildRequires:	sed >= 4.0
 # The following are needed for man page generation
 BuildRequires:	python-lxml
@@ -75,11 +77,10 @@ Documentation for translate-toolkit.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-
-# none of them seem actually requiring bash
-sed -i -e '1s,#!/bin/bash,#!/bin/sh,' tools/po*
+%patch2 -p1
 
 %build
+checkbashisms tools/*
 %{__python} setup.py build
 
 %install
