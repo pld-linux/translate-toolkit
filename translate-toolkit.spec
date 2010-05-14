@@ -11,15 +11,17 @@ Version:	1.7.0
 Release:	1
 License:	GPL v2+
 Group:		Development/Tools
-URL:		http://translate.sourceforge.net/wiki/toolkit/index
 Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	70a826257adbffab849556c2d50b8b48
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
-BuildRequires:	python-devel
+URL:		http://translate.sourceforge.net/wiki/toolkit/index
 BuildRequires:	checkbashisms
+BuildRequires:	python-dateutil
+BuildRequires:	python-devel
+BuildRequires:	python-modules
+BuildRequires:	rpm-pythonprov
 BuildRequires:	sed >= 4.0
 # The following are needed for man page generation
 BuildRequires:	python-lxml
