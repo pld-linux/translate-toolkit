@@ -8,7 +8,7 @@
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.7.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
