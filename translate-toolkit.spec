@@ -8,7 +8,7 @@
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.7.0
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
@@ -127,7 +127,7 @@ rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/filters/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/lang/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/indexing/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/test_*.py
+rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/placeables/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/test_*.py*
 rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/xml_extract/test_*.py*
