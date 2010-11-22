@@ -7,12 +7,12 @@
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.8.0
+Version:	1.8.1
 Release:	1
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/project/translate/Translate%20Toolkit/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	6acc870d677d6312625e3e002d483b58
+# Source0-md5:	b4cae0700aa1c2aef7eb7f345365e6f1
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
