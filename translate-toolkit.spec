@@ -7,12 +7,12 @@
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.8.1
+Version:	1.9.0
 Release:	1
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-# Source0-md5:	b4cae0700aa1c2aef7eb7f345365e6f1
+# Source0-md5:	6106bb27887a77c056bfa7d2fd89204d
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
@@ -195,6 +195,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(lt) %{_datadir}/%{name}/langmodels/lithuanian.lm
 %lang(lv) %{_datadir}/%{name}/langmodels/latvian.lm
 %lang(ms) %{_datadir}/%{name}/langmodels/malay.lm
+%lang(nd) %{_datadir}/%{name}/langmodels/Ndebele.lm
 %lang(nl) %{_datadir}/%{name}/langmodels/dutch.lm
 %lang(no) %{_datadir}/%{name}/langmodels/norwegian.lm
 %lang(po) %{_datadir}/%{name}/langmodels/polish.lm
@@ -208,14 +209,22 @@ rm -rf $RPM_BUILD_ROOT
 %lang(sq) %{_datadir}/%{name}/langmodels/albanian.lm
 %lang(sr) %{_datadir}/%{name}/langmodels/latin.lm
 %lang(sr@latin) %{_datadir}/%{name}/langmodels/serbian_ascii.lm
+%lang(ss) %{_datadir}/%{name}/langmodels/Swati.lm
+%lang(st) %{_datadir}/%{name}/langmodels/NorthernSotho.lm
+%lang(st) %{_datadir}/%{name}/langmodels/Sotho.lm
 %lang(sv) %{_datadir}/%{name}/langmodels/swedish.lm
 %lang(sw) %{_datadir}/%{name}/langmodels/swahili.lm
 %lang(tl) %{_datadir}/%{name}/langmodels/tagalog.lm
+%lang(tn) %{_datadir}/%{name}/langmodels/Tswana.lm
 %lang(tr) %{_datadir}/%{name}/langmodels/turkish.lm
+%lang(ts) %{_datadir}/%{name}/langmodels/Tsonga.lm
 %lang(uk) %{_datadir}/%{name}/langmodels/ukrainian.lm
+%lang(ve) %{_datadir}/%{name}/langmodels/Venda.lm
 %lang(vi) %{_datadir}/%{name}/langmodels/vietnamese.lm
+%lang(xh) %{_datadir}/%{name}/langmodels/Xhosa.lm
 %lang(zh_CN) %{_datadir}/%{name}/langmodels/chinese_simplified.lm
 %lang(zh_TW) %{_datadir}/%{name}/langmodels/chinese_traditional.lm
+%lang(zu) %{_datadir}/%{name}/langmodels/Zulu.lm
 
 %dir %{py_sitescriptdir}/translate
 %{py_sitescriptdir}/translate/*.py[co]
