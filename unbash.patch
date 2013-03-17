@@ -65,7 +65,7 @@
 +++ translate-toolkit-1.7.0/tools/pocompendium	2010-05-13 19:21:20.621015064 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/bash
-+#!/bin/sh
++#!/bin/bash
  #
  # Copyright 2004, 2005 Zuza Software Foundation
  #
@@ -91,7 +91,7 @@
 +++ translate-toolkit-1.7.0/tools/pomigrate2	2010-05-13 19:21:20.621015064 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/bash
-+#!/bin/sh
++#!/bin/bash
  #
  # Copyright 2004, 2005 Zuza Software Foundation
  #

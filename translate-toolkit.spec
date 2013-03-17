@@ -2,21 +2,21 @@
 # - fc gettext-libs is contained in "gettext-devel, libasprintf", but which exactly?
 #
 # Conditional build:
-%bcond_without	apidocs		# do not package API docs
+%bcond_with	apidocs		# do not package API docs
 %bcond_without	doc			# do not package user docs
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.9.0
-Release:	1
+Version:	1.10.0
+Release:	0.3
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-# Source0-md5:	6106bb27887a77c056bfa7d2fd89204d
+# Source0-md5:	91ef9ec6e997f8cd5379fb1e44ce2063
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
-URL:		http://translate.sourceforge.net/wiki/toolkit/index
+URL:		http://toolkit.translatehouse.org/
 BuildRequires:	checkbashisms
 BuildRequires:	python-dateutil
 BuildRequires:	python-devel
@@ -82,8 +82,31 @@ Documentation for translate-toolkit.
 %patch2 -p1
 
 %build
-checkbashisms tools/*
+checkbashisms $(grep -rl '/bin/sh' tools)
+
+# TODO, handle:
+#possible bashism in tools/pocompendium line 159 (<() process substituion):
+#possible bashism in tools/pocompendium line 171 (<() process substituion):
+#possible bashism in tools/pomigrate2 line 155 (<() process substituion):
+#	msgcat -o $new/$file $temp_msgcat_new/$file 2> >(egrep -v "warning: internationali.ed messages should not contain the .* escape sequence" >&2)
+
 %{__python} setup.py build
+
+# create manpages
+install -d man
+for script in build/scripts-%{py_ver}/*; do
+	program=${script##*/}
+
+	case $script in
+		pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py|tmserver|build_tmdb)
+	;;
+	*)
+		LC_ALL=C PYTHONPATH=. $program --manpage \
+		  > man/$program.1 \
+		  || %{__rm} man/$program.1
+	;;
+	esac
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -92,45 +115,32 @@ rm -rf $RPM_BUILD_ROOT
 	--skip-build \
 	--root $RPM_BUILD_ROOT
 
-# create manpages
 install -d $RPM_BUILD_ROOT%{_mandir}/man1
-for program in $RPM_BUILD_ROOT%{_bindir}/*; do
-	case $(basename $program) in
-	  pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py|tmserver|build_tmdb)
-	   ;;
-	  *)
-		LC_ALL=C PYTHONPATH=. $program --manpage \
-		  > $RPM_BUILD_ROOT%{_mandir}/man1/$(basename $program).1 \
-		  || rm -f $RPM_BUILD_ROOT%{_mandir}/man1/$(basename $program).1
-		  ;;
-	esac
-done
+cp -a man/* $RPM_BUILD_ROOT%{_mandir}/man1
 
 %py_postclean
 
 # remove documentation files from site-packages
-rm -r $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/doc
-rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{COPYING,ChangeLog,LICENSE,README}
-rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{convert,filters,tools}/TODO
-rm $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/README
+%{__rm} -r $RPM_BUILD_ROOT%{py_sitescriptdir}/docs
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{COPYING,README.rst}
 
 # Move data files to %{_datadir}
-mkdir  $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
-mv $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share/stoplist* $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
-mv $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share/langmodels $RPM_BUILD_ROOT%{_datadir}/translate-toolkit
-rmdir $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share
+install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
+mv $RPM_BUILD_ROOT%{py_sitescriptdir}/share/stoplist* $RPM_BUILD_ROOT%{_datadir}/%{name}
+mv $RPM_BUILD_ROOT%{py_sitescriptdir}/share/langmodels $RPM_BUILD_ROOT%{_datadir}/%{name}
+rmdir $RPM_BUILD_ROOT%{py_sitescriptdir}/share
 
 # we don't package tests
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/tools/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/convert/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/filters/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/lang/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/indexing/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/placeables/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/test_*.py*
-rm -f $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/xml_extract/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/tools/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/convert/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/filters/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/lang/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/misc/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/indexing/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/search/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/placeables/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/test_*.py*
+%{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/storage/xml_extract/test_*.py*
 
 # build lang file
 echo "%dir %{py_sitescriptdir}/translate/lang" > %{name}.lang
@@ -152,10 +162,129 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc translate/ChangeLog translate/README
-%attr(755,root,root) %{_bindir}/*
-%{_mandir}/man1/*
-%dir %{_datadir}/translate-toolkit
+%doc README.rst
+%attr(755,root,root) %{_bindir}/build_firefox.sh
+%attr(755,root,root) %{_bindir}/build_tmdb
+%attr(755,root,root) %{_bindir}/csv2po
+%attr(755,root,root) %{_bindir}/csv2tbx
+%attr(755,root,root) %{_bindir}/html2po
+%attr(755,root,root) %{_bindir}/ical2po
+%attr(755,root,root) %{_bindir}/ini2po
+%attr(755,root,root) %{_bindir}/json2po
+%attr(755,root,root) %{_bindir}/junitmsgfmt
+%attr(755,root,root) %{_bindir}/moz2po
+%attr(755,root,root) %{_bindir}/odf2xliff
+%attr(755,root,root) %{_bindir}/oo2po
+%attr(755,root,root) %{_bindir}/oo2xliff
+%attr(755,root,root) %{_bindir}/php2po
+%attr(755,root,root) %{_bindir}/po2csv
+%attr(755,root,root) %{_bindir}/po2html
+%attr(755,root,root) %{_bindir}/po2ical
+%attr(755,root,root) %{_bindir}/po2ini
+%attr(755,root,root) %{_bindir}/po2json
+%attr(755,root,root) %{_bindir}/po2moz
+%attr(755,root,root) %{_bindir}/po2oo
+%attr(755,root,root) %{_bindir}/po2php
+%attr(755,root,root) %{_bindir}/po2prop
+%attr(755,root,root) %{_bindir}/po2rc
+%attr(755,root,root) %{_bindir}/po2sub
+%attr(755,root,root) %{_bindir}/po2symb
+%attr(755,root,root) %{_bindir}/po2tiki
+%attr(755,root,root) %{_bindir}/po2tmx
+%attr(755,root,root) %{_bindir}/po2ts
+%attr(755,root,root) %{_bindir}/po2txt
+%attr(755,root,root) %{_bindir}/po2web2py
+%attr(755,root,root) %{_bindir}/po2wordfast
+%attr(755,root,root) %{_bindir}/po2xliff
+%attr(755,root,root) %{_bindir}/poclean
+%attr(755,root,root) %{_bindir}/pocommentclean
+%attr(755,root,root) %{_bindir}/pocompendium
+%attr(755,root,root) %{_bindir}/pocompile
+%attr(755,root,root) %{_bindir}/poconflicts
+%attr(755,root,root) %{_bindir}/pocount
+%attr(755,root,root) %{_bindir}/podebug
+%attr(755,root,root) %{_bindir}/pofilter
+%attr(755,root,root) %{_bindir}/pogrep
+%attr(755,root,root) %{_bindir}/pomerge
+%attr(755,root,root) %{_bindir}/pomigrate2
+%attr(755,root,root) %{_bindir}/popuretext
+%attr(755,root,root) %{_bindir}/poreencode
+%attr(755,root,root) %{_bindir}/porestructure
+%attr(755,root,root) %{_bindir}/posegment
+%attr(755,root,root) %{_bindir}/posplit
+%attr(755,root,root) %{_bindir}/poswap
+%attr(755,root,root) %{_bindir}/pot2po
+%attr(755,root,root) %{_bindir}/poterminology
+%attr(755,root,root) %{_bindir}/pretranslate
+%attr(755,root,root) %{_bindir}/prop2po
+%attr(755,root,root) %{_bindir}/rc2po
+%attr(755,root,root) %{_bindir}/sub2po
+%attr(755,root,root) %{_bindir}/symb2po
+%attr(755,root,root) %{_bindir}/tiki2po
+%attr(755,root,root) %{_bindir}/tmserver
+%attr(755,root,root) %{_bindir}/ts2po
+%attr(755,root,root) %{_bindir}/txt2po
+%attr(755,root,root) %{_bindir}/web2py2po
+%attr(755,root,root) %{_bindir}/xliff2odf
+%attr(755,root,root) %{_bindir}/xliff2oo
+%attr(755,root,root) %{_bindir}/xliff2po
+%{_mandir}/man1/csv2po.1*
+%{_mandir}/man1/csv2tbx.1*
+%{_mandir}/man1/html2po.1*
+%{_mandir}/man1/ical2po.1*
+%{_mandir}/man1/ini2po.1*
+%{_mandir}/man1/json2po.1*
+%{_mandir}/man1/junitmsgfmt.1*
+%{_mandir}/man1/moz2po.1*
+%{_mandir}/man1/odf2xliff.1*
+%{_mandir}/man1/oo2po.1*
+%{_mandir}/man1/oo2xliff.1*
+%{_mandir}/man1/php2po.1*
+%{_mandir}/man1/po2csv.1*
+%{_mandir}/man1/po2html.1*
+%{_mandir}/man1/po2ical.1*
+%{_mandir}/man1/po2ini.1*
+%{_mandir}/man1/po2json.1*
+%{_mandir}/man1/po2moz.1*
+%{_mandir}/man1/po2oo.1*
+%{_mandir}/man1/po2php.1*
+%{_mandir}/man1/po2prop.1*
+%{_mandir}/man1/po2rc.1*
+%{_mandir}/man1/po2sub.1*
+%{_mandir}/man1/po2symb.1*
+%{_mandir}/man1/po2tiki.1*
+%{_mandir}/man1/po2tmx.1*
+%{_mandir}/man1/po2ts.1*
+%{_mandir}/man1/po2txt.1*
+%{_mandir}/man1/po2web2py.1*
+%{_mandir}/man1/po2wordfast.1*
+%{_mandir}/man1/po2xliff.1*
+%{_mandir}/man1/poclean.1*
+%{_mandir}/man1/pocompile.1*
+%{_mandir}/man1/poconflicts.1*
+%{_mandir}/man1/podebug.1*
+%{_mandir}/man1/pofilter.1*
+%{_mandir}/man1/pogrep.1*
+%{_mandir}/man1/pomerge.1*
+%{_mandir}/man1/porestructure.1*
+%{_mandir}/man1/posegment.1*
+%{_mandir}/man1/poswap.1*
+%{_mandir}/man1/pot2po.1*
+%{_mandir}/man1/poterminology.1*
+%{_mandir}/man1/pretranslate.1*
+%{_mandir}/man1/prop2po.1*
+%{_mandir}/man1/rc2po.1*
+%{_mandir}/man1/sub2po.1*
+%{_mandir}/man1/symb2po.1*
+%{_mandir}/man1/tiki2po.1*
+%{_mandir}/man1/ts2po.1*
+%{_mandir}/man1/txt2po.1*
+%{_mandir}/man1/web2py2po.1*
+%{_mandir}/man1/xliff2odf.1*
+%{_mandir}/man1/xliff2oo.1*
+%{_mandir}/man1/xliff2po.1*
+
+%dir %{_datadir}/%{name}
 
 %dir %{_datadir}/%{name}/langmodels
 %{_datadir}/%{name}/langmodels/README
@@ -242,7 +371,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with doc}
 %files doc
 %defattr(644,root,root,755)
-%doc translate/doc/user/*
+%doc docs/_build/html/*
 %endif
 
 %if %{with apidocs}
