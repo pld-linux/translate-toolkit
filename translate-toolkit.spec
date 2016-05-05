@@ -1,5 +1,3 @@
-# TODO
-# - fc gettext-libs is contained in "gettext-devel, libasprintf", but which exactly?
 #
 # Conditional build:
 %bcond_with	apidocs		# do not package API docs
@@ -8,7 +6,7 @@
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.13.0
-Release:	0.3
+Release:	1
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	https://github.com/translate/translate/releases/download/%{version}/%{name}-%{version}.tar.bz2
@@ -28,15 +26,15 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	python-lxml
 BuildRequires:	python-simplejson
 BuildRequires:	python-vobject
-Requires:	python-iniparse
+Requires:	python-iniparse >= 0.3.1
 Requires:	python-lxml >= 2.1.0
 Requires:	python-simplejson
-Requires:	python-vobject
+Requires:	python-vobject >= 0.6.6
 %ifarch %{ix86}
 Requires:	python-psyco
 %endif
 Suggests:	iso-codes
-Suggests:	python-Levenshtein
+Suggests:	python-Levenshtein >= 0.10.2
 Suggests:	python-pyenchant
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
