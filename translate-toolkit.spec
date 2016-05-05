@@ -7,21 +7,22 @@
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.10.0
+Version:	1.13.0
 Release:	0.3
 License:	GPL v2+
 Group:		Development/Tools
-Source0:	http://downloads.sourceforge.net/translate/%{name}-%{version}.tar.bz2
-# Source0-md5:	91ef9ec6e997f8cd5379fb1e44ce2063
+Source0:	https://github.com/translate/translate/releases/download/%{version}/%{name}-%{version}.tar.bz2
+# Source0-md5:	f9997a0deb3f1767bb20665a47cd2708
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
 URL:		http://toolkit.translatehouse.org/
 BuildRequires:	checkbashisms
 BuildRequires:	python-dateutil
-BuildRequires:	python-devel
 BuildRequires:	python-modules
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.714
 BuildRequires:	sed >= 4.0
 # The following are needed for man page generation
 BuildRequires:	python-lxml
@@ -81,23 +82,22 @@ Documentation for translate-toolkit.
 %patch1 -p1
 %patch2 -p1
 
+# FIXME: they do it wrong apparently? that can't do via setup.py?
+%{__sed} -i -e 's#packagesdir = get_python_lib()#packagesdir = "%{py_sitescriptdir}"#' setup.py
+
 %build
-checkbashisms $(grep -rl '/bin/sh' tools)
+checkbashisms $(grep -rl '#!/bin/sh' tools)
 
-# TODO, handle:
-#possible bashism in tools/pocompendium line 159 (<() process substituion):
-#possible bashism in tools/pocompendium line 171 (<() process substituion):
-#possible bashism in tools/pomigrate2 line 155 (<() process substituion):
-#	msgcat -o $new/$file $temp_msgcat_new/$file 2> >(egrep -v "warning: internationali.ed messages should not contain the .* escape sequence" >&2)
-
-%{__python} setup.py build
+%py_build
 
 # create manpages
 install -d man
-for script in build/scripts-%{py_ver}/*; do
+for script in build-2/scripts-%{py_ver}/*; do
 	program=${script##*/}
 
+	# exclude some known failures
 	case $script in
+		build_firefox.sh|buildxpi.py|get_moz_enUS.py|\
 		pocompendium|poen|pomigrate2|popuretext|poreencode|posplit|pocount|poglossary|lookupclient.py|tmserver|build_tmdb)
 	;;
 	*)
@@ -110,25 +110,19 @@ done
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install \
-	--optimize=2 \
-	--skip-build \
-	--root $RPM_BUILD_ROOT
+%py_install
+%py_postclean
 
 install -d $RPM_BUILD_ROOT%{_mandir}/man1
 cp -a man/* $RPM_BUILD_ROOT%{_mandir}/man1
 
-%py_postclean
-
 # remove documentation files from site-packages
-%{__rm} -r $RPM_BUILD_ROOT%{py_sitescriptdir}/docs
+%{__rm} -r $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/docs
 %{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/{COPYING,README.rst}
 
 # Move data files to %{_datadir}
 install -d $RPM_BUILD_ROOT%{_datadir}/%{name}
-mv $RPM_BUILD_ROOT%{py_sitescriptdir}/share/stoplist* $RPM_BUILD_ROOT%{_datadir}/%{name}
-mv $RPM_BUILD_ROOT%{py_sitescriptdir}/share/langmodels $RPM_BUILD_ROOT%{_datadir}/%{name}
-rmdir $RPM_BUILD_ROOT%{py_sitescriptdir}/share
+mv $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/share/* $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 # we don't package tests
 %{__rm} $RPM_BUILD_ROOT%{py_sitescriptdir}/translate/tools/test_*.py*
@@ -165,8 +159,10 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rst
 %attr(755,root,root) %{_bindir}/build_firefox.sh
 %attr(755,root,root) %{_bindir}/build_tmdb
+%attr(755,root,root) %{_bindir}/buildxpi.py
 %attr(755,root,root) %{_bindir}/csv2po
 %attr(755,root,root) %{_bindir}/csv2tbx
+%attr(755,root,root) %{_bindir}/get_moz_enUS.py
 %attr(755,root,root) %{_bindir}/html2po
 %attr(755,root,root) %{_bindir}/ical2po
 %attr(755,root,root) %{_bindir}/ini2po
@@ -187,6 +183,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/po2php
 %attr(755,root,root) %{_bindir}/po2prop
 %attr(755,root,root) %{_bindir}/po2rc
+%attr(755,root,root) %{_bindir}/po2resx
 %attr(755,root,root) %{_bindir}/po2sub
 %attr(755,root,root) %{_bindir}/po2symb
 %attr(755,root,root) %{_bindir}/po2tiki
@@ -218,6 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pretranslate
 %attr(755,root,root) %{_bindir}/prop2po
 %attr(755,root,root) %{_bindir}/rc2po
+%attr(755,root,root) %{_bindir}/resx2po
 %attr(755,root,root) %{_bindir}/sub2po
 %attr(755,root,root) %{_bindir}/symb2po
 %attr(755,root,root) %{_bindir}/tiki2po
@@ -285,7 +283,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/xliff2po.1*
 
 %dir %{_datadir}/%{name}
-
 %dir %{_datadir}/%{name}/langmodels
 %{_datadir}/%{name}/langmodels/README
 %{_datadir}/%{name}/stoplist-en
@@ -364,9 +361,7 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitescriptdir}/translate/services
 %{py_sitescriptdir}/translate/storage
 %{py_sitescriptdir}/translate/tools
-%if "%{py_ver}" > "2.4"
 %{py_sitescriptdir}/translate_toolkit-*.egg-info
-%endif
 
 %if %{with doc}
 %files doc
