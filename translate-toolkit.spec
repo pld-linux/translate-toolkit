@@ -88,6 +88,8 @@ checkbashisms $(grep -rl '#!/bin/sh' tools)
 
 %py_build
 
+rm -r docs/_build/html/_sources
+
 # create manpages
 install -d man
 for script in build-2/scripts-%{py_ver}/*; do
