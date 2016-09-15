@@ -14,6 +14,7 @@ Source0:	https://github.com/translate/translate/releases/download/%{version}-rc1
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
+Patch3:		egg-deps.patch
 URL:		http://toolkit.translatehouse.org/
 BuildRequires:	checkbashisms
 BuildRequires:	python-dateutil
@@ -28,6 +29,7 @@ BuildRequires:	python-vobject
 %endif
 Requires:	python-iniparse >= 0.3.1
 Requires:	python-lxml >= 2.1.0
+Requires:	python-modules >= 1:2.7
 Requires:	python-setuptools
 Requires:	python-simplejson
 Requires:	python-vobject >= 0.6.6
@@ -80,6 +82,7 @@ Documentation for translate-toolkit.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 # FIXME: they do it wrong apparently? that can't do via setup.py?
 %{__sed} -i -e 's#packagesdir = get_python_lib()#packagesdir = "%{py_sitescriptdir}"#' setup.py
