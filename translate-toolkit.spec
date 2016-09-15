@@ -6,7 +6,7 @@
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
 Version:	1.14.0
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Development/Tools
 Source0:	https://github.com/translate/translate/releases/download/%{version}-rc1/%{name}-%{version}-rc1.tar.bz2
@@ -28,6 +28,7 @@ BuildRequires:	python-vobject
 %endif
 Requires:	python-iniparse >= 0.3.1
 Requires:	python-lxml >= 2.1.0
+Requires:	python-setuptools
 Requires:	python-simplejson
 Requires:	python-vobject >= 0.6.6
 %ifarch %{ix86}
