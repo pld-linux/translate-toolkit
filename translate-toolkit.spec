@@ -187,6 +187,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/ini2po
 %attr(755,root,root) %{_bindir}/json2po
 %attr(755,root,root) %{_bindir}/junitmsgfmt
+%attr(755,root,root) %{_bindir}/l20n2po
 %attr(755,root,root) %{_bindir}/moz2po
 %attr(755,root,root) %{_bindir}/mozlang2po
 %attr(755,root,root) %{_bindir}/odf2xliff
@@ -200,6 +201,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/po2idml
 %attr(755,root,root) %{_bindir}/po2ini
 %attr(755,root,root) %{_bindir}/po2json
+%attr(755,root,root) %{_bindir}/po2l20n
 %attr(755,root,root) %{_bindir}/po2moz
 %attr(755,root,root) %{_bindir}/po2mozlang
 %attr(755,root,root) %{_bindir}/po2oo
@@ -243,6 +245,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/resx2po
 %attr(755,root,root) %{_bindir}/sub2po
 %attr(755,root,root) %{_bindir}/symb2po
+%attr(755,root,root) %{_bindir}/tbx2po
 %attr(755,root,root) %{_bindir}/tiki2po
 %attr(755,root,root) %{_bindir}/tmserver
 %attr(755,root,root) %{_bindir}/ts2po
