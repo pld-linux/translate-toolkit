@@ -1,13 +1,12 @@
-diff -up translate-toolkit-1.5.3/translate/tools/poterminology.py.stoplist translate-toolkit-1.5.3/translate/tools/poterminology.py
---- translate-toolkit-1.5.3/translate/tools/poterminology.py.stoplist	2010-01-23 01:18:39.000000000 +0200
-+++ translate-toolkit-1.5.3/translate/tools/poterminology.py	2010-02-02 15:35:24.000000000 +0200
-@@ -74,7 +74,7 @@ class TerminologyExtractor(object):
+--- translate-toolkit-2.1.0/translate/tools/poterminology.py~	2017-04-23 18:23:57.000000000 +0300
++++ translate-toolkit-2.1.0/translate/tools/poterminology.py	2017-04-23 18:24:31.871529381 +0300
+@@ -79,7 +79,7 @@
  
          if stopfile is None:
              try:
 -                stopfile = file_discovery.get_abs_data_filename('stoplist-%s' % self.sourcelanguage)
 +                stopfile = '/usr/share/translate-toolkit/stoplist-%s' % self.sourcelanguage
-             except:
+             except Exception:
                  pass
          self.stopfile = stopfile
 @@ -457,7 +457,7 @@ def main():

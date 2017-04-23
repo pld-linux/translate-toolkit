@@ -1,9 +1,0 @@
---- translate-toolkit-1.14.0-rc1/requirements/required.txt~	2016-03-07 17:18:17.000000000 +0200
-+++ translate-toolkit-1.14.0-rc1/requirements/required.txt	2016-09-15 12:55:53.773712158 +0300
-@@ -1,6 +1,5 @@
- # argparse is required for Python 2.6, it is a
- # standard library in Python >= 2.7
--argparse
- six>=1.9
- 
- # Required to provide compatibility for old Virtaal releases:

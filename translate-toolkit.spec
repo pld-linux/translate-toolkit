@@ -5,16 +5,15 @@
 
 Summary:	Tools to assist with translation and software localization
 Name:		translate-toolkit
-Version:	1.14.0
-Release:	2
+Version:	2.1.0
+Release:	1
 License:	GPL v2+
 Group:		Development/Tools
-Source0:	https://github.com/translate/translate/releases/download/%{version}-rc1/%{name}-%{version}-rc1.tar.bz2
-# Source0-md5:	5c9db1077098d7cc10a2704bf673c8b3
+Source0:	https://github.com/translate/translate/releases/download/%{version}/%{name}-%{version}.tar.bz2
+# Source0-md5:	302d20ad12a34da9992ef14f4ba13261
 Patch0:		%{name}-stoplist.patch
 Patch1:		%{name}-langmodel_dir.patch
 Patch2:		unbash.patch
-Patch3:		egg-deps.patch
 URL:		http://toolkit.translatehouse.org/
 BuildRequires:	checkbashisms
 BuildRequires:	python-dateutil
@@ -78,11 +77,10 @@ Group:		Documentation
 Documentation for translate-toolkit.
 
 %prep
-%setup -q -n %{name}-%{version}-rc1
+%setup -q
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 # FIXME: they do it wrong apparently? that can't do via setup.py?
 %{__sed} -i -e 's#packagesdir = get_python_lib()#packagesdir = "%{py_sitescriptdir}"#' setup.py
