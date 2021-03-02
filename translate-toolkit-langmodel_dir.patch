@@ -1,8 +1,7 @@
-diff -up translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir translate-toolkit-1.5.0/translate/lang/identify.py
-diff -up translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir translate-toolkit-1.5.0/translate/lang/identify.py
---- translate-toolkit-1.5.0/translate/lang/identify.py.langmodel_dir	2009-11-24 16:33:22.000000000 +0200
-+++ translate-toolkit-1.5.0/translate/lang/identify.py	2009-11-24 16:34:36.000000000 +0200
-@@ -32,7 +32,7 @@ from ngram import NGram
+diff -urNp -x '*.orig' translate-toolkit-2.2.4.org/translate/lang/identify.py translate-toolkit-2.2.4/translate/lang/identify.py
+--- translate-toolkit-2.2.4.org/translate/lang/identify.py	2017-07-31 15:41:45.000000000 +0200
++++ translate-toolkit-2.2.4/translate/lang/identify.py	2021-03-02 23:26:49.747045758 +0100
+@@ -32,7 +32,7 @@ from translate.storage.base import Trans
  
  
  class LanguageIdentifier(object):

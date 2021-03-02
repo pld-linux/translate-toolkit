@@ -1,6 +1,7 @@
---- translate-toolkit-2.1.0/translate/tools/poterminology.py~	2017-04-23 18:23:57.000000000 +0300
-+++ translate-toolkit-2.1.0/translate/tools/poterminology.py	2017-04-23 18:24:31.871529381 +0300
-@@ -79,7 +79,7 @@
+diff -urNp -x '*.orig' translate-toolkit-2.2.4.org/translate/tools/poterminology.py translate-toolkit-2.2.4/translate/tools/poterminology.py
+--- translate-toolkit-2.2.4.org/translate/tools/poterminology.py	2017-07-31 15:41:45.000000000 +0200
++++ translate-toolkit-2.2.4/translate/tools/poterminology.py	2021-03-02 23:26:49.343713783 +0100
+@@ -78,7 +78,7 @@ class TerminologyExtractor(object):
  
          if stopfile is None:
              try:
@@ -9,12 +10,12 @@
              except Exception:
                  pass
          self.stopfile = stopfile
-@@ -457,7 +457,7 @@ def main():
+@@ -471,7 +471,7 @@ def main():
  
      parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
                        help="read stopword (term exclusion) list from STOPFILE (default %s)" %
 -                      file_discovery.get_abs_data_filename('stoplist-en'))
 +                      '/usr/share/translate-toolkit/stoplist-en')
  
-     parser.set_defaults(foldtitle = True, ignorecase = False)
-     parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
+     parser.set_defaults(foldtitle=True, ignorecase=False)
+     parser.add_option(
