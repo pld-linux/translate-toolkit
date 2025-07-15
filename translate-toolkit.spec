@@ -78,9 +78,9 @@ Documentation for translate-toolkit.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
 
 # FIXME: they do it wrong apparently? that can't do via setup.py?
 %{__sed} -i -e 's#packagesdir = get_python_lib()#packagesdir = "%{py_sitescriptdir}"#' setup.py
